@@ -1,13 +1,13 @@
-local function poison_func(entity, factor, duration)
-    if entity and not entity.effects_exempt then
-        mcl_potions.poison_func(entity, factor, duration)
-    end
-end
+local orig_res_cond = mcl_potions.registered_effects["poison"].res_condition
 
 minetest.register_on_mods_loaded(function()
-  if minetest.get_modpath("mcl_mobs") then
-    mcl_mobs.effect_functions["poison"] = poison_func
-  end
+    mcl_potions.registered_effects["poison"].res_condition = function(entity)
+        if entity and not entity.effects_exempt then
+            return orig_res_cond(entity)
+        else 
+            return true
+        end
+    end
 end)
 
 local function remove_nearby_arrows(entity, radius)
